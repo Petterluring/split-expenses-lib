@@ -36,7 +36,7 @@ class Expense(
          * accumulated debts/credits as values. Positive values represent credits while negative values
          * represent debts.
          */
-        fun globalBalance(expenses: List<Expense>): Map<String, Double> {
+        fun globalTab(expenses: List<Expense>): Map<String, Double> {
             val balance = mutableMapOf<String, Double>()
             expenses.forEach { expense ->
                 val creditor = expense.creditor

@@ -26,11 +26,12 @@ class ExpenseTest {
 
     @Test
     fun `derives tab correctly`() {
-        val balance = expense.tab()
-        assertEquals(-1000.0, balance["Lisa"])
-        assertEquals(-1000.0, balance["Garret"])
-        assertEquals(4000.0, balance["John"])
-        assertEquals(-2000.0, balance["Peter"])
+        val tab = expense.tab()
+        assertEquals(-1000.0, tab["Lisa"])
+        assertEquals(-1000.0, tab["Garret"])
+        assertEquals(4000.0, tab["John"])
+        assertEquals(-2000.0, tab["Peter"])
+        assertEquals(0.0, tab.values.sum())
     }
 
     @Test
@@ -75,5 +76,64 @@ class ExpenseTest {
                 ) // Garret appears twice
             }
         assertTrue(exception.message!!.contains("must be unique"))
+    }
+
+    @Test
+    fun `derives global tab correctly`() {
+        val bistro =
+            Expense(
+                name = "Lunch at Bistro",
+                "Lunch with friends, Sunday afternoon.",
+                1000.0,
+                Creditor(
+                    "Lisa",
+                    0.25,
+                ),
+                listOf(
+                    Debtor("John", 0.15),
+                    Debtor("Garret", 0.30),
+                    Debtor("Peter", 0.30),
+                ),
+            )
+
+        val pizzaNight =
+            Expense(
+                name = "Pizza night",
+                "Pizza with friends, Friday evening.",
+                1000.0,
+                Creditor(
+                    "Peter",
+                    0.30,
+                ),
+                listOf(
+                    Debtor("John", 0.20),
+                    Debtor("Lisa", 0.25),
+                    Debtor("Garret", 0.25),
+                ),
+            )
+
+        val movieTickets =
+            Expense(
+                name = "Movie tickets",
+                "Movie night with friends.",
+                1000.0,
+                Creditor(
+                    "Garret",
+                    0.35,
+                ),
+                listOf(
+                    Debtor("Lisa", 0.15),
+                    Debtor("Peter", 0.25),
+                    Debtor("Emma", 0.25),
+                ),
+            )
+        val expenses = listOf(bistro, pizzaNight, movieTickets)
+        val tab = Expense.globalTab(expenses)
+        assertEquals(350.0, tab["Lisa"])
+        assertEquals(-350.0, tab["John"])
+        assertEquals(100.0, tab["Garret"])
+        assertEquals(150.0, tab["Peter"])
+        assertEquals(-250.0, tab["Emma"])
+        assertEquals(0.0, tab.values.sum())
     }
 }

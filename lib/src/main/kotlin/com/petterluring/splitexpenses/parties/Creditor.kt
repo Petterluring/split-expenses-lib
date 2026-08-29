@@ -9,6 +9,6 @@ class Creditor(
 ) : Party(name, share) {
     fun credit(expense: Double): Double {
         require(expense >= 0) { "Expense $expense must be >= 0.0." }
-        return expense - expense * share
+        return expense * (1.0 - share)
     }
 }

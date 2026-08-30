@@ -19,7 +19,7 @@ class Expense(
 ) {
     var amount: Double = amount
         set(value) {
-            require(value >= 0.0) { "Value $value must be >= 0.0." }
+            require(value >= 0.0) { "Amount $value must be >= 0.0." }
             field = value
         }
 
@@ -42,8 +42,8 @@ class Expense(
         /**
          * Settle a set of shared expenses by returning a set of payments stating
          * how group members should pay each other.
-         * @param tab - A map summarizing the debts and credits of group members. Debts are negative values
-         *              while credits are positive. The sum of all credits and debts should be 0.
+         * @param tab - A map summarizing the net debts and credits of group members. Debts are negative values
+         *              while credits are positive. The sum of all credits and debts should be close to 0.
          */
         fun settleFromTab(tab: Map<String, Double>): List<Payment> {
             require(abs(tab.values.sum()) <= TOLERANCE) { "Values in tab must sum to 0" }
@@ -57,8 +57,8 @@ class Expense(
             var credit = 0.0
             var debt = 0.0
             while (i < j) {
-                val creditor = items[j]
                 val debtor = items[i]
+                val creditor = items[j]
                 credit = if (abs(credit) <= TOLERANCE) creditor.value else credit
                 debt = if (abs(debt) <= TOLERANCE) -debtor.value else debt // debtor.value becomes positive when applying -
 
@@ -78,7 +78,7 @@ class Expense(
                 if (abs(debt) <= TOLERANCE) i++
                 if (abs(credit) <= TOLERANCE) j--
             }
-            return payments
+            return payments.toList()
         }
 
         /**

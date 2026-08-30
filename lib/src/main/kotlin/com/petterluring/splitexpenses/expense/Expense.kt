@@ -25,14 +25,28 @@ class Expense(
 
     init {
         val shares = creditor.share + debtors.sumOf { it.share }
-        require(abs(1.0 - shares) < 1e-4) { "Shares $shares should close to 1.0. Acceptable tolerance: +-1e-4" }
+        require(abs(1.0 - shares) <= TOLERANCE) { "Shares $shares should be close to 1.0. Acceptable tolerance: +-$TOLERANCE" }
         val names = debtors.map { it.name }.plus(creditor.name)
         require(names.size == names.distinct().size) { "Names of debtors and creditor must be unique." }
     }
 
     companion object {
-        fun settle(expenses: List<Expense>): List<Payment> {
-            val tab = globalTab(expenses)
+        private const val TOLERANCE = 1e-6
+
+        /**
+         * Settle a set of shared expenses by returning a set of payments stating
+         * how group members should pay each other.
+         */
+        fun settle(expenses: List<Expense>): List<Payment> = settleFromTab(globalTab(expenses))
+
+        /**
+         * Settle a set of shared expenses by returning a set of payments stating
+         * how group members should pay each other.
+         * @param tab - A map summarizing the debts and credits of group members. Debts are negative values
+         *              while credits are positive. The sum of all credits and debts should be 0.
+         */
+        fun settleFromTab(tab: Map<String, Double>): List<Payment> {
+            require(abs(tab.values.sum()) <= TOLERANCE) { "Values in tab must sum to 0" }
 
             val payments = mutableListOf<Payment>()
             val items = tab.entries.toList().sortedBy { it.value }
@@ -45,8 +59,8 @@ class Expense(
             while (i < j) {
                 val creditor = items[j]
                 val debtor = items[i]
-                credit = if (credit == 0.0) creditor.value else credit
-                debt = if (debt == 0.0) -debtor.value else debt // debtor.value becomes positive when applying -
+                credit = if (abs(credit) <= TOLERANCE) creditor.value else credit
+                debt = if (abs(debt) <= TOLERANCE) -debtor.value else debt // debtor.value becomes positive when applying -
 
                 var payAmount: Double
                 if (credit - debt >= 0) {
@@ -61,30 +75,30 @@ class Expense(
 
                 payments.add(Payment(debtor.key, creditor.key, payAmount))
 
-                if (debt == 0.0) i++
-                if (credit == 0.0) j--
+                if (abs(debt) <= TOLERANCE) i++
+                if (abs(credit) <= TOLERANCE) j--
             }
             return payments
         }
 
         /**
          * Return a map with the names of the involving parties from a set of expenses as keys and their
-         * accumulated debts/credits as values. Positive values represent credits while negative values
-         * represent debts.
+         * accumulated debts/credits as values. Positive values represent net credits while negative values
+         * represent net debts.
          */
         fun globalTab(expenses: List<Expense>): Map<String, Double> {
-            val balance = mutableMapOf<String, Double>()
+            val tab = mutableMapOf<String, Double>()
             expenses.forEach { expense ->
                 val creditor = expense.creditor
                 val debtors = expense.debtors
                 val amount = expense.amount
 
-                balance[creditor.name] = (balance[creditor.name] ?: 0.0) + creditor.credit(amount)
+                tab[creditor.name] = (tab[creditor.name] ?: 0.0) + creditor.credit(amount)
                 debtors.forEach { debtor ->
-                    balance[debtor.name] = (balance[debtor.name] ?: 0.0) - debtor.debt(amount)
+                    tab[debtor.name] = (tab[debtor.name] ?: 0.0) - debtor.debt(amount)
                 }
             }
-            return balance
+            return tab
         }
     }
 

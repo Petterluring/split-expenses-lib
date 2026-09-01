@@ -46,7 +46,7 @@ class Expense(
          *              while credits are positive. The sum of all credits and debts should be close to 0.
          */
         fun settleFromTab(tab: Map<String, Double>): List<Payment> {
-            require(abs(tab.values.sum()) <= TOLERANCE) { "Values in tab must sum to 0" }
+            require(abs(tab.values.sum()) <= TOLERANCE) { "Values in tab must approximately sum to 0" }
 
             val payments = mutableListOf<Payment>()
             val items = tab.entries.toList().sortedBy { it.value }

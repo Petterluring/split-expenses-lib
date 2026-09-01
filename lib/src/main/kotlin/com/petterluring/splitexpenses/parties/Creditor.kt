@@ -1,7 +1,7 @@
 package com.petterluring.splitexpenses.parties
 
 /**
- * Represents individual that collects debts from one or more debtors in a group with shared expenses.
+ * Represents individual that collect debts from one or more debtors in a group with shared expenses.
  */
 class Creditor(
     name: String,

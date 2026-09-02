@@ -1,7 +1,7 @@
 
 # Introduction
 
-Consider a group of people participating in activities involving expenses where each person has covered different amounts of the total expenses. The goal of this library is to decide how the group memebers should pay each other to settle the expenses fairly and effectively. The solution to this problem is trivial if one person has covered all expenses and are to be split equally in the group. However, it becomes more complex when group members cover different amounts of the total expenses while these are split among the members with different shares, making it complex to derive how members should pay each other to satisfy the settlement.
+Consider a group of people participating in activities involving expenses where each person has covered different amounts of the total expenses. The goal of this library is to decide how the group members should pay each other to settle the expenses fairly and effectively. While the solution to this problem is trivial when the exepenses are split equally and  covered by one member, more complexity is added when members cover different amounts of the total expenses while each member pays different shares for each expense. 
 
 ## Example
 
@@ -26,7 +26,11 @@ Consider a group of four friends: Alice, Bob, Charlie, and Diana going on a week
 
 ## Initial solution
 
-## Refined solution
+A trivial solution is to resolve each expense independently. Using Expense 1 as an example, Alice would simply remove her 100$ share from the 200$ expense, leaving 100$ in credit for Bob and Charlie to pay. Their shares are 30% and 20%, meaning that they should pay 60$ and 40$ dollars respectively. This procedure would then repeat for Expense 2 and 3
+
+The solution introduces more payments between group members than needed when comparing it to the better solution introduced in the next section.
+
+## Better solution
 
 # Gradle project
 

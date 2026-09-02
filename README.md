@@ -30,10 +30,154 @@ Consider a group of four friends: Alice, Bob, Charlie, and Diana going on a week
 
 # Gradle project
 
+## Building and Testing
+
+This project uses Gradle for building and testing. The project was built using Java 21 and is implemented with Kotlin.
+
+**Build the library:**
+```bash
+./gradlew build
+```
+
+**Run tests:**
+```bash
+./gradlew test
+```
+
+**Clean build artifacts:**
+```bash
+./gradlew clean
+```
+
+The build configuration is defined in `lib/build.gradle.kts` and uses:
+- Kotlin JVM plugin for Kotlin support
+- Java Library plugin for API/implementation separation
+- JUnit Platform for test execution
+- ktlint for code formatting
+
 ## Source code
 
-## Setup
+The library provides the following main classes:
 
-## Installing project as a dependency
+### `Party` (abstract)
+Located in: `com.petterluring.splitexpenses.parties`
+
+The abstract base class representing an individual in a group who has a debt or credit for a shared expense.
+
+### `Creditor`
+Located in: `com.petterluring.splitexpenses.parties`
+
+Extends `Party` and represents an individual who collects debts from debtors in a group with shared expenses. This is the person who paid for an expense.
+
+### `Debtor`
+Located in: `com.petterluring.splitexpenses.parties`
+
+Extends `Party` and represents an individual owing money to a creditor in a group.
+
+### `Expense`
+Located in: `com.petterluring.splitexpenses.expense`
+
+Represents a shared expense that was paid by one individual (the creditor) in a group. The remaining group members become debtors who pay their share to settle the expense fairly.
+
+### `Payment`
+Located in: `com.petterluring.splitexpenses.payment`
+
+Represents a payment that should be made from a debtor to a creditor.
+
+## Using as a Dependency
+
+
 
 ## Example usage
+
+Here's a comprehensive example showing how to use the library with a weekend trip scenario involving multiple expenses, varying amounts, different shares per expense, and different people covering the costs:
+
+```kotlin
+import com.petterluring.splitexpenses.expense.Expense
+import com.petterluring.splitexpenses.parties.Creditor
+import com.petterluring.splitexpenses.parties.Debtor
+import com.petterluring.splitexpenses.payment.Payment
+
+fun main() {
+    // Weekend trip with 4 friends: Alice, Bob, Charlie, and Diana
+
+    // Expense 1: Hotel ($200) - Alice pays
+    // Alice stays at hotel but others split it differently
+    val hotelExpense = Expense(
+        name = "Hotel",
+        description = "Weekend accommodation",
+        amount = 200.0,
+        creditor = Creditor("Alice", 0.50),  // Alice pays and stays 50%
+        debtors = listOf(
+            Debtor("Bob", 0.30),    // Bob stays 30%
+            Debtor("Charlie", 0.20) // Charlie stays 20%
+            // Diana doesn't stay at the hotel (not included)
+        )
+    )
+
+    // Expense 2: Groceries ($120) - Bob pays
+    // Split equally among all four friends
+    val groceriesExpense = Expense(
+        name = "Groceries",
+        description = "Food for the weekend",
+        amount = 120.0,
+        creditor = Creditor("Bob", 0.25),
+        debtors = listOf(
+            Debtor("Alice", 0.25),
+            Debtor("Charlie", 0.25),
+            Debtor("Diana", 0.25)
+        )
+    )
+
+    // Expense 3: Activity Tickets ($300) - Charlie pays
+    // Different shares based on activity participation
+    val activityExpense = Expense(
+        name = "Activity Tickets",
+        description = "Adventure activities",
+        amount = 300.0,
+        creditor = Creditor("Charlie", 0.10),  // Charlie is organizer, gets 10%
+        debtors = listOf(
+            Debtor("Alice", 0.40),   // Alice attends 40%
+            Debtor("Bob", 0.40),     // Bob attends 40%
+            Debtor("Diana", 0.10)    // Diana attends 10%
+        )
+    )
+
+    // Expense 4: Restaurant Dinner ($150) - Diana pays
+    // Not everyone attends
+    val dinnerExpense = Expense(
+        name = "Restaurant Dinner",
+        description = "Group dinner on Saturday",
+        amount = 150.0,
+        creditor = Creditor("Diana", 0.0),    // Diana pays and doesn't eat (covers others)
+        debtors = listOf(
+            Debtor("Alice", 0.33),   // Alice eats 1/3
+            Debtor("Bob", 0.33),     // Bob eats 1/3
+            Debtor("Charlie", 0.34)  // Charlie eats 1/3
+        )
+    )
+
+    // Collect all expenses
+    val allExpenses = listOf(hotelExpense, groceriesExpense, activityExpense, dinnerExpense)
+
+    // Calculate the global tab showing who owes/is owed money
+    val tab = Expense.globalTab(allExpenses)
+    println("=== Global Tab ===")
+    tab.forEach { (name, amount) ->
+        if (amount > 0) {
+            println("$name is owed: $${"%.2f".format(amount)}")
+        } else {
+            println("$name owes: $${"%.2f".format(-amount)}")
+        }
+    }
+    println()
+
+    // Settle all expenses - get the actual payments needed
+    val payments = Expense.settle(allExpenses)
+    println("=== Required Payments ===")
+    payments.forEach { payment ->
+        println("${payment.from} pays ${payment.to}: $${"%.2f".format(payment.amount)}")
+    }
+    println()
+}
+```

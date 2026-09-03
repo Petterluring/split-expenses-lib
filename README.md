@@ -18,10 +18,10 @@ Consider a group of four friends: Alice, Bob, Charlie, and Diana going on a week
 - Each person: 25% = $30
 
 **Expense 3 - Activities**: Charlie pays $300 for activity tickets
-- Alice: 40% (attends 2 out of 3 activities)
-- Bob: 40% (attends 2 out of 3 activities)
-- Charlie: 10% (organizer discount)
-- Diana: 10% (limited activities)
+- Alice: 40% = 120$ (attends 2 out of 3 activities)
+- Bob: 40% = 120$ (attends 2 out of 3 activities)
+- Charlie: 10% = 30$ (organizer discount)
+- Diana: 10% = 30$ (limited activities)
 
 
 ## Initial solution
@@ -31,6 +31,46 @@ A trivial solution is to resolve each expense independently. Using Expense 1 as 
 The solution introduces more payments between group members than needed when comparing it to the better solution introduced in the next section.
 
 ## Better solution
+
+The better solution, and perhaps the most effective one, is to subtract the total credit with the total debt, yielding a net debt/credit for each member. Then, as a rule of thumb, debts should cancel credits that are similar in value. This means that high debts will cancel high credits, creating larger and fewer payments between group members. 
+
+### Solving example
+
+Net debts/credits:
+- Alice (A) = (200-100)$ - 30$ - 120$ = -50$
+- Bob (B) = -60$ + (120-30)$ - 120$ = -90$
+- Charlie (C) = -40$ - 30$ + (300-30)$ = 200$
+- Diana (D) = -30$ - 30$ = -60$
+
+Remark that negative values correspond to net debts while positive values are net credits. 
+
+Put the debts and credits in a list and sort them increasingly. Dollar signs are omitted.
+
+```bash
+[-90 (B), -60 (D), -50 (A), 200 (C)]
+```
+
+Initialize two pointers at the start and end of the list and successively resolve the debts/credits.
+
+```bash
+  p1                         p2
+[-90 (B), -60 (D), -50 (A), 200 (C)]
+  |                          Λ
+  |__________________________|
+
+          p1                p2
+[ 0 (B), -60 (D), -50 (A), 110 (C)]
+          |                 Λ
+          |_________________|
+
+                  p1      p2
+[ 0 (B),  0 (D), -50 (A), 50 (C)]
+                  |        Λ
+                  |________|
+
+[ 0 (B),  0 (D), 0 (A), 0 (C)]
+```
+Remark that p2 was never moved as there where only one credit. However, if there were more, the pointer would move to the left after the previous credit was paid off.
 
 # Gradle project
 

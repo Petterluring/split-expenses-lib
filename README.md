@@ -120,7 +120,12 @@ Represents a payment that should be made from a debtor to a creditor.
 
 ## Using as a Dependency
 
-
+The user can add this library as a gradle dependency:
+```kotlin
+dependencies {
+    implementation("io.github.petterluring:split-expenses:1.0.0")
+}
+```
 
 ## Example usage
 

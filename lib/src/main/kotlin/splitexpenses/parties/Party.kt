@@ -1,4 +1,4 @@
-package com.petterluring.splitexpenses.parties
+package splitexpenses.parties
 
 /**
  * Represents individual in a group who has a debt or credit for a shared expense.

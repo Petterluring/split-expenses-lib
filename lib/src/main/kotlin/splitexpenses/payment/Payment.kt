@@ -1,7 +1,10 @@
-package com.petterluring.splitexpenses.payment
+package splitexpenses.payment
 
 /**
  * Represents a payment that is to be made from a debtor to a creditor.
+ * @property from - Name of debtor.
+ * @property to - Name of creditor.
+ * @property amount - Monetary value to pay to creditor.
  */
 class Payment(
     val from: String,

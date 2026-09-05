@@ -1,4 +1,4 @@
-package com.petterluring.splitexpenses.parties
+package splitexpenses.parties
 
 /**
  * Represents individual that collect debts from one or more debtors in a group with shared expenses.
@@ -9,6 +9,8 @@ class Creditor(
 ) : Party(name, share) {
     /**
      * Calculates the amount of money that a creditor should collect from the debtors.
+     * @param - Expense value. Must be >= 0.
+     * @return - Credit value.
      */
     fun credit(expense: Double): Double {
         require(expense >= 0) { "Expense $expense must be >= 0.0." }

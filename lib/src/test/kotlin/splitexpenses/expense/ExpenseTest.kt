@@ -1,13 +1,13 @@
-package com.petterluring.splitexpenses.expense
+package splitexpenses.expense
 
-import com.petterluring.splitexpenses.parties.Creditor
-import com.petterluring.splitexpenses.parties.Debtor
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.MethodSource
+import splitexpenses.parties.Creditor
+import splitexpenses.parties.Debtor
 import java.util.stream.Stream
 import kotlin.math.abs
 

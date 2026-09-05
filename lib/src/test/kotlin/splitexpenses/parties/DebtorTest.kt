@@ -1,4 +1,4 @@
-package com.petterluring.splitexpenses.parties
+package splitexpenses.parties
 
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertTrue

@@ -5,10 +5,14 @@
  * For more details on building Java & JVM projects, please refer to https://docs.gradle.org/9.5.0/userguide/building_java_projects.html in the Gradle documentation.
  */
 
+group = "io.github.petterluring"
+version = "1.0.0"
+
 plugins {
     // Apply the org.jetbrains.kotlin.jvm Plugin to add support for Kotlin.
     alias(libs.plugins.kotlin.jvm)
     alias(libs.plugins.ktlint)
+    alias(libs.plugins.maven.publish)
 
     // Apply the java-library plugin for API and implementation separation.
     `java-library`
@@ -19,6 +23,42 @@ plugins {
 repositories {
     // Use Maven Central for resolving dependencies.
     mavenCentral()
+}
+
+mavenPublishing {
+    publishToMavenCentral()
+    signAllPublications()
+
+    coordinates(group.toString(), "split-expenses", version.toString())
+
+    pom {
+        name.set("split-expenses")
+        description.set(
+            "Consider a group of people participating in an activity together " +
+                "that involves shared expenses, where each person has covered a different amount " +
+                "of the total expenses. The goal of this library is to calculate how the members should " +
+                "settle their expenses with each other so that everyone ultimately pays a fair share.",
+        )
+        inceptionYear.set("2026")
+        url.set("https://github.com/Petterluring/split-expenses-lib")
+        licenses {
+            license {
+                name.set("MIT License")
+            }
+        }
+        developers {
+            developer {
+                id.set("Petterluring")
+                name.set("Petter Gustafsson")
+                url.set("https://github.com/Petterluring/")
+            }
+        }
+        scm {
+            url.set("https://github.com/Petterluring/split-expenses-lib")
+            connection.set("scm:git:git://github.com/Petterluring/split-expenses-lib.git")
+            developerConnection.set("scm:git:ssh://git@github.com/Petterluring/split-expenses-lib.git")
+        }
+    }
 }
 
 dependencies {
@@ -45,3 +85,10 @@ tasks.named<Test>("test") {
     // Use JUnit Platform for unit tests.
     useJUnitPlatform()
 }
+
+/*
+tasks.register<JavaExec>("main") {
+    classpath = sourceSets.main.get().runtimeClasspath
+    mainClass.set("MainKt")
+}
+ */

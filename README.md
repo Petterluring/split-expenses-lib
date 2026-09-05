@@ -32,14 +32,14 @@ The solution introduces more payments between group members than needed when com
 
 ## Better solution
 
-The better solution, and perhaps the most effective one, is to subtract the total credit with the total debt, yielding a net debt/credit for each member. Then, as a rule of thumb, debts should cancel credits that are similar in value. This means that high debts will cancel high credits, creating larger and fewer payments between group members. 
+The better solution, and perhaps the most effective one, is to subtract each members' total credit with their total debt, yielding a net debt/credit for each member. Then, as a rule of thumb, debts should cancel credits that are similar in value. This means that high debts will cancel high credits, creating larger and fewer payments between group members. 
 
 ### Solving example
 
 Net debts/credits:
-- Alice (A) = (200-100)$ - 30$ - 120$ = -50$
-- Bob (B) = -60$ + (120-30)$ - 120$ = -90$
-- Charlie (C) = -40$ - 30$ + (300-30)$ = 200$
+- Alice (A) = (200-100)\$ - 30$ - 120$ = -50$
+- Bob (B) = -60$ + (120-30)\$ - 120$ = -90$
+- Charlie (C) = -40$ - 30$ + (300-30)\$ = 200$
 - Diana (D) = -30$ - 30$ = -60$
 
 Remark that negative values correspond to net debts while positive values are net credits. 
@@ -88,11 +88,6 @@ This project uses Gradle for building and testing. The project was built using J
 ./gradlew test
 ```
 
-**Clean build artifacts:**
-```bash
-./gradlew clean
-```
-
 The build configuration is defined in `lib/build.gradle.kts` and uses:
 - Kotlin JVM plugin for Kotlin support
 - Java Library plugin for API/implementation separation
@@ -104,27 +99,22 @@ The build configuration is defined in `lib/build.gradle.kts` and uses:
 The library provides the following main classes:
 
 ### `Party` (abstract)
-Located in: `com.petterluring.splitexpenses.parties`
 
 The abstract base class representing an individual in a group who has a debt or credit for a shared expense.
 
 ### `Creditor`
-Located in: `com.petterluring.splitexpenses.parties`
 
 Extends `Party` and represents an individual who collects debts from debtors in a group with shared expenses. This is the person who paid for an expense.
 
 ### `Debtor`
-Located in: `com.petterluring.splitexpenses.parties`
 
 Extends `Party` and represents an individual owing money to a creditor in a group.
 
 ### `Expense`
-Located in: `com.petterluring.splitexpenses.expense`
 
 Represents a shared expense that was paid by one individual (the creditor) in a group. The remaining group members become debtors who pay their share to settle the expense fairly.
 
 ### `Payment`
-Located in: `com.petterluring.splitexpenses.payment`
 
 Represents a payment that should be made from a debtor to a creditor.
 
